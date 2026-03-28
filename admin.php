@@ -1,14 +1,4 @@
 <?php
-/**
- * UNIBOOKSTORE - Admin Panel
- * File: admin.php
- * 
- * Fitur:
- * - Kelola data buku (CRUD)
- * - Kelola data penerbit (CRUD)
- * - Tampilkan dalam tabel
- * - Tombol: Tambah, Edit, Delete
- */
 
 include 'config/koneksi.php';
 
@@ -92,7 +82,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
             </li>
         </ul>
 
-        <!-- ========== TAB 1: Kelola Buku ========== -->
+        <!--  TAB 1: Kelola Buku  -->
         <?php if ($tab == 'buku'): ?>
             <div class="tab-pane active">
                 <h2 class="mb-3">Daftar Buku</h2>
@@ -106,7 +96,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
 
                 <!-- Table -->
                 <?php
-                $query_buku = "SELECT b.id_buku, b.kategori, b.nama_buku, b.harga, b.stok, p.nama as nama_penerbit, b.id_penerbit 
+                $query_buku = "SELECT b.id_buku, b.kategori, b.nama_buku, b.harga, b.stok, p.nama as nama_penerbit, b.id_penerbit, b.gambar 
                               FROM buku b 
                               JOIN penerbit p ON b.id_penerbit = p.id_penerbit 
                               ORDER BY b.id_buku ASC";
@@ -120,6 +110,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                             <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Gambar</th>
                                     <th>Kategori</th>
                                     <th>Nama Buku</th>
                                     <th>Harga</th>
@@ -132,6 +123,15 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                                 <?php while ($row = mysqli_fetch_assoc($result_buku)): ?>
                                     <tr>
                                         <td><?php echo htmlspecialchars($row['id_buku']); ?></td>
+                                        <td>
+                                            <?php if (!empty($row['gambar'])): ?>
+                                                <img src="assets/pictures/<?php echo htmlspecialchars($row['gambar']); ?>" 
+                                                     alt="<?php echo htmlspecialchars($row['nama_buku']); ?>" 
+                                                     style="height: 60px; width: auto; border-radius: 4px;">
+                                            <?php else: ?>
+                                                <span class="text-muted">-</span>
+                                            <?php endif; ?>
+                                        </td>
                                         <td><?php echo htmlspecialchars($row['kategori']); ?></td>
                                         <td><?php echo htmlspecialchars($row['nama_buku']); ?></td>
                                         <td>Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></td>
@@ -142,7 +142,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                                                 <button class="btn btn-warning btn-sm" 
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#modalEditBuku"
-                                                    onclick="editBuku('<?php echo $row['id_buku']; ?>', '<?php echo addslashes($row['kategori']); ?>', '<?php echo addslashes($row['nama_buku']); ?>', '<?php echo $row['harga']; ?>', '<?php echo $row['stok']; ?>', '<?php echo $row['id_penerbit']; ?>')">
+                                                    onclick="editBuku('<?php echo $row['id_buku']; ?>', '<?php echo addslashes($row['kategori']); ?>', '<?php echo addslashes($row['nama_buku']); ?>', '<?php echo $row['harga']; ?>', '<?php echo $row['stok']; ?>', '<?php echo $row['id_penerbit']; ?>', '<?php echo addslashes($row['gambar']); ?>')">
                                                     ✏️ Edit
                                                 </button>
                                                 <a href="proses_buku.php?action=delete&id=<?php echo $row['id_buku']; ?>" 
@@ -162,7 +162,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                 <?php endif; ?>
             </div>
 
-        <!-- ========== TAB 2: Kelola Penerbit ========== -->
+        <!--  TAB 2: Kelola Penerbit  -->
         <?php elseif ($tab == 'penerbit'): ?>
             <div class="tab-pane active">
                 <h2 class="mb-3">Daftar Penerbit</h2>
@@ -230,7 +230,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
 
     </div>
 
-    <!-- ========== MODAL: Tambah Buku ========== -->
+    <!--  MODAL: Tambah Buku  -->
     <div class="modal fade" id="modalTambahBuku" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -238,7 +238,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                     <h5 class="modal-title">Tambah Buku Baru</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="POST" action="proses_buku.php?action=add">
+                <form method="POST" action="proses_buku.php?action=add" enctype="multipart/form-data">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">ID Buku</label>
@@ -272,6 +272,11 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                                 ?>
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Gambar Buku</label>
+                            <input type="file" class="form-control" name="gambar" accept="image/*">
+                            <small class="text-muted">Format: JPG, JPEG, PNG, GIF (Max 2MB)</small>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -282,7 +287,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
         </div>
     </div>
 
-    <!-- ========== MODAL: Edit Buku ========== -->
+    <!--  MODAL: Edit Buku  -->
     <div class="modal fade" id="modalEditBuku" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -290,7 +295,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                     <h5 class="modal-title">Edit Buku</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="POST" action="proses_buku.php?action=edit">
+                <form method="POST" action="proses_buku.php?action=edit" enctype="multipart/form-data">
                     <div class="modal-body">
                         <input type="hidden" name="id_buku" id="edit_id_buku">
                         <div class="mb-3">
@@ -320,6 +325,14 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                                 ?>
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Gambar Buku Saat Ini</label>
+                            <div style="margin-bottom: 10px;">
+                                <img id="edit_preview_gambar" src="" alt="Preview" style="height: 100px; width: auto; border-radius: 4px; display: none;">
+                            </div>
+                            <input type="file" class="form-control" name="gambar" id="edit_gambar" accept="image/*">
+                            <small class="text-muted">Format: JPG, JPEG, PNG, GIF (Max 2MB)</small>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -330,7 +343,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
         </div>
     </div>
 
-    <!-- ========== MODAL: Tambah Penerbit ========== -->
+    <!--  MODAL: Tambah Penerbit  -->
     <div class="modal fade" id="modalTambahPenerbit" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -370,7 +383,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
         </div>
     </div>
 
-    <!-- ========== MODAL: Edit Penerbit ========== -->
+    <!--  MODAL: Edit Penerbit  -->
     <div class="modal fade" id="modalEditPenerbit" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -417,13 +430,21 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
 
     <script>
         // Function to populate edit buku modal
-        function editBuku(id, kategori, nama, harga, stok, id_penerbit) {
+        function editBuku(id, kategori, nama, harga, stok, id_penerbit, gambar) {
             document.getElementById('edit_id_buku').value = id;
             document.getElementById('edit_kategori').value = kategori;
             document.getElementById('edit_nama_buku').value = nama;
             document.getElementById('edit_harga').value = harga;
             document.getElementById('edit_stok').value = stok;
             document.getElementById('edit_id_penerbit').value = id_penerbit;
+            
+            // Show preview gambar if exists
+            if (gambar) {
+                document.getElementById('edit_preview_gambar').src = 'assets/pictures/' + encodeURIComponent(gambar);
+                document.getElementById('edit_preview_gambar').style.display = 'block';
+            } else {
+                document.getElementById('edit_preview_gambar').style.display = 'none';
+            }
         }
 
         // Function to populate edit penerbit modal
