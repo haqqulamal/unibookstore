@@ -1,13 +1,4 @@
 <?php
-/**
- * UNIBOOKSTORE - Publisher Processing
- * File: proses_penerbit.php
- * 
- * Fitur:
- * - ADD: Tambah penerbit baru
- * - EDIT: Edit data penerbit
- * - DELETE: Hapus penerbit
- */
 
 include 'config/koneksi.php';
 
@@ -19,7 +10,7 @@ $success_message = '';
 $error_message = '';
 
 try {
-    // ========== ADD NEW PUBLISHER ==========
+    //  ADD NEW PUBLISHER 
     if ($action == 'add') {
         // Get POST data
         $id_penerbit = mysqli_real_escape_string($koneksi, $_POST['id_penerbit']);
@@ -49,7 +40,7 @@ try {
 
         $success_message = "Penerbit berhasil ditambahkan!";
 
-    // ========== EDIT PUBLISHER ==========
+    //  EDIT PUBLISHER 
     } elseif ($action == 'edit') {
         // Get POST data
         $id_penerbit = mysqli_real_escape_string($koneksi, $_POST['id_penerbit']);
@@ -73,7 +64,7 @@ try {
 
         $success_message = "Penerbit berhasil diperbarui!";
 
-    // ========== DELETE PUBLISHER ==========
+    //  DELETE PUBLISHER 
     } elseif ($action == 'delete') {
         // Get ID from URL
         $id_penerbit = mysqli_real_escape_string($koneksi, $_GET['id']);
