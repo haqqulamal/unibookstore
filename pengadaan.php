@@ -3,7 +3,7 @@
 include 'config/koneksi.php';
 
 // Query untuk mendapatkan buku dengan stok terendah
-$query = "SELECT b.id_buku, b.kategori, b.nama_buku, b.harga, b.stok, p.nama as nama_penerbit 
+$query = "SELECT b.id_buku, b.kategori, b.nama_buku, b.harga, b.stok, p.nama as nama_penerbit, b.gambar 
           FROM buku b 
           JOIN penerbit p ON b.id_penerbit = p.id_penerbit 
           ORDER BY b.stok ASC 
@@ -77,6 +77,7 @@ $total_rendah = mysqli_num_rows($result);
                     <thead>
                         <tr>
                             <th>ID Buku</th>
+                            <th>Gambar</th>
                             <th>Kategori</th>
                             <th>Nama Buku</th>
                             <th>Harga</th>
@@ -89,6 +90,15 @@ $total_rendah = mysqli_num_rows($result);
                         <?php while ($row = mysqli_fetch_assoc($result)): ?>
                             <tr>
                                 <td><strong><?php echo htmlspecialchars($row['id_buku']); ?></strong></td>
+                                <td>
+                                    <?php if (!empty($row['gambar'])): ?>
+                                        <img src="assets/pictures/<?php echo htmlspecialchars($row['gambar']); ?>" 
+                                             alt="<?php echo htmlspecialchars($row['nama_buku']); ?>" 
+                                             style="height: 60px; width: auto; border-radius: 4px;">
+                                    <?php else: ?>
+                                        <span class="text-muted">-</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td><?php echo htmlspecialchars($row['kategori']); ?></td>
                                 <td><?php echo htmlspecialchars($row['nama_buku']); ?></td>
                                 <td>Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></td>
