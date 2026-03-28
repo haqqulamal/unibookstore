@@ -1,13 +1,4 @@
 <?php
-/**
- * UNIBOOKSTORE - Pengadaan (Procurement Report)
- * File: pengadaan.php
- * 
- * Fitur:
- * - Menampilkan laporan buku dengan stok PALING SEDIKIT
- * - Ambil nama_buku dan nama_penerbit
- * - ORDER BY stok ASC LIMIT 5
- */
 
 include 'config/koneksi.php';
 

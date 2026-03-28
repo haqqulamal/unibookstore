@@ -1,10 +1,4 @@
 <?php
-/**
- * UNIBOOKSTORE - Database Connection
- * File: config/koneksi.php
- * 
- * Koneksi ke database MySQL menggunakan mysqli
- */
 
 // Define database credentials
 $host = "localhost";
@@ -23,5 +17,4 @@ if (!$koneksi) {
 // Set charset to utf8
 mysqli_set_charset($koneksi, "utf8");
 
-// Return connection object
 ?>
